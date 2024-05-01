@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import axios from "../data/projects";
-import { Button, Input, Table } from "antd";
+import { Button, Input, Table, message } from "antd";
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Skeleton } from "antd";
 import debounce from "lodash/debounce";
@@ -20,24 +20,26 @@ const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
-  const debouncedSearch = debounce((query) => {
-    if (query) {
-      const lowerCaseQuery = query.toLowerCase();
-      const filtered = data.filter(
-        (project) =>
-          project.name.toLowerCase().includes(lowerCaseQuery) ||
-          project.description.toLowerCase().includes(lowerCaseQuery) ||
-          project.status.toLowerCase().includes(lowerCaseQuery)
-      );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(data);
-    }
-  }, 300);
+useEffect(() => {
+  debouncedSearch(searchTerm);
+}, [searchTerm, data]);
 
-  useEffect(() => {
-    debouncedSearch(searchTerm);
-  }, [searchTerm, data]);
+const debouncedSearch = debounce((query) => {
+  if (query) {
+    const lowerCaseQuery = query.toLowerCase();
+    const filtered = data.filter(
+      (project) =>
+        project.name.toLowerCase().includes(lowerCaseQuery) ||
+        project.description.toLowerCase().includes(lowerCaseQuery) ||
+        project.status.toLowerCase().includes(lowerCaseQuery)
+    );
+    setFilteredData(filtered);
+  } else {
+    setFilteredData(data);
+  }
+}, 300);
+
+
 
   if (isLoading) {
     return (
@@ -60,9 +62,18 @@ const ProjectsPage = () => {
   const editRecord = (id) => {
     console.log("Editing record:", id);
   };
-
+  
   const deleteRecord = (id) => {
-    console.log("Deleting record:", id);
+    const updatedData = data.filter((record) => record.id !== id);
+    setFilteredData(updatedData);
+    message.success({
+      content: "Record deleted successfully",
+      key: "deleteRecord",
+      duration: 2,
+      style: {
+        marginTop: "10vh",
+      },
+    });
   };
 
   const columns = [
