@@ -182,19 +182,21 @@ const ProjectsPage = () => {
   ];
 
   return (
-    <>
-      <div style={{ marginBottom: "20px" }}>
-        <Input
-          placeholder="Search projects by name"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ width: 200 }}
-        />
-      </div>
+<>
+    <div style={{ padding: "20px 40px" }}> 
+        <div style={{ marginBottom: "20px", textAlign: "right" }}> 
+            <Input
+                placeholder="Search projects..."
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ width: "300px", borderRadius: "4px" }}
+            />
+        </div>
+        <div style={{ padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", borderRadius: "8px", backgroundColor: "#fff" }}>
+            <Table dataSource={filteredData} columns={columns} rowKey="id" />
+        </div>
+    </div>
+</>
 
-      <div style={{ padding: "14px", maxWidth: "1300px", margin: "auto" }}>
-        <Table dataSource={filteredData} columns={columns} rowKey="id" />
-      </div>
-    </>
   );
 };
 
