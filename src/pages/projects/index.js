@@ -1,61 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import axios from "../../data/projects";
+import React, { useEffect } from "react";
 import { Button, Input, Table, message } from "antd";
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Skeleton } from "antd";
-import debounce from "lodash/debounce";
-import { useRouter } from 'next/router'; 
-
-const fetchProjects = async () => {
-  const { data } = await axios.get("/projects");
-  return data.projects;
-};
+import { useRouter } from 'next/router';
+import useProjectsStore from "@/store/projectsStore";
 
 const ProjectsPage = () => {
-  const { data, error, isLoading, isError } = useQuery(
-    "projects",
-    fetchProjects
-  );
+  const {
+    projects,
+    filteredProjects,
+    fetchProjects,
+    filterProjects,
+    removeProject,
+    loading,
+    error
+  } = useProjectsStore((state) => ({
+    projects: state.projects,
+    filteredProjects: state.filteredProjects,
+    fetchProjects: state.fetchProjects,
+    filterProjects: state.filterProjects,
+    removeProject: state.removeProject,
+    loading: state.loading,
+    error: state.error
+  }));
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
   const router = useRouter();
-
-useEffect(() => {
-  debouncedSearch(searchTerm);
-}, [searchTerm, data]);
-
-const debouncedSearch = debounce((query) => {
-  if (query) {
-    const lowerCaseQuery = query.toLowerCase();
-    const filtered = data.filter(
-      (project) =>
-        project.name.toLowerCase().includes(lowerCaseQuery) ||
-        project.description.toLowerCase().includes(lowerCaseQuery) ||
-        project.status.toLowerCase().includes(lowerCaseQuery)
-    );
-    setFilteredData(filtered);
-  } else {
-    setFilteredData(data);
-  }
-}, 300);
-
-
-
-  if (isLoading) {
-    return (
-      <div style={{ padding: "24px", maxWidth: "1300px", margin: "auto" }}>
-        <Skeleton active paragraph={{ rows: 1 }} />
-        <Skeleton active title={false} paragraph={{ rows: 2 }} />
-        <Skeleton active title={false} paragraph={{ rows: 2 }} />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return <span>Error: {error.message}</span>;
-  }
 
   const viewRecord = (id) => {
     console.log("Viewing record:", id);
@@ -64,19 +37,12 @@ const debouncedSearch = debounce((query) => {
 
   const editRecord = (id) => {
     console.log("Editing record:", id);
+    // Implementation for editing the record
   };
-  
+
   const deleteRecord = (id) => {
-    const updatedData = data.filter((record) => record.id !== id);
-    setFilteredData(updatedData);
-    message.success({
-      content: "Record deleted successfully",
-      key: "deleteRecord",
-      duration: 2,
-      style: {
-        marginTop: "10vh",
-      },
-    });
+    removeProject(id);
+    message.success("Record deleted successfully");
   };
 
   const columns = [
@@ -160,7 +126,7 @@ const debouncedSearch = debounce((query) => {
     {
       title: "Actions",
       key: "actions",
-      render: (text, record) => (
+      render: (_, record) => (
         <div
           style={{
             display: "flex",
@@ -195,22 +161,31 @@ const debouncedSearch = debounce((query) => {
     },
   ];
 
-  return (
-<>
-    <div style={{ padding: "20px 40px" }}> 
-        <div style={{ marginBottom: "20px", textAlign: "right" }}> 
-            <Input
-                placeholder="Search projects..."
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ width: "300px", borderRadius: "4px" }}
-            />
-        </div>
-        <div style={{ padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", borderRadius: "8px", backgroundColor: "#fff" }}>
-            <Table dataSource={filteredData} columns={columns} rowKey="id" />
-        </div>
-    </div>
-</>
+  const handleSearchChange = (e) => {
+    filterProjects(e.target.value);
+  };
 
+  if (loading) {
+    return <Skeleton active />;
+  }
+
+  if (error) {
+    return <span>Error: {error}</span>;
+  }
+
+  return (
+    <div style={{ padding: "20px 40px" }}>
+      <div style={{ marginBottom: "20px", textAlign: "right" }}>
+        <Input
+          placeholder="Search projects..."
+          onChange={handleSearchChange}
+          style={{ width: "300px", borderRadius: "4px" }}
+        />
+      </div>
+      <div style={{ padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", borderRadius: "8px", backgroundColor: "#fff" }}>
+        <Table dataSource={filteredProjects} columns={columns} rowKey="id" />
+      </div>
+    </div>
   );
 };
 
