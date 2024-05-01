@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import axios from "../data/projects";
+import axios from "../../data/projects";
 import { Button, Input, Table, message } from "antd";
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Skeleton } from "antd";
