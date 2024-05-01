@@ -5,6 +5,7 @@ import { Button, Input, Table, message } from "antd";
 import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Skeleton } from "antd";
 import debounce from "lodash/debounce";
+import { useRouter } from 'next/router'; 
 
 const fetchProjects = async () => {
   const { data } = await axios.get("/projects");
@@ -19,6 +20,7 @@ const ProjectsPage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const router = useRouter();
 
 useEffect(() => {
   debouncedSearch(searchTerm);
@@ -57,6 +59,7 @@ const debouncedSearch = debounce((query) => {
 
   const viewRecord = (id) => {
     console.log("Viewing record:", id);
+    router.push(`/projects/projectDetails/${id}`);
   };
 
   const editRecord = (id) => {
