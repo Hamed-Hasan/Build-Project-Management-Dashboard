@@ -61,7 +61,31 @@ const useProjectsStore = create((set, get) => ({
       set({ error: error.message, loading: false });
     }
   },
-  
+
+
+  fetchTasks: async (projectId) => {
+    set({ loading: true });
+    try {
+      const response = await axios.get(`/projects/${projectId}/tasks`);
+      set({ loading: false });
+      return response.data.tasks;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  updateTaskStatus: async (taskId, status) => {
+    set({ loading: true });
+    try {
+      const response = await axios.put(`/tasks/${taskId}/status`, { status });
+      set({ loading: false });
+      return response.data.task;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+
 }));
 
 export default useProjectsStore;

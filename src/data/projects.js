@@ -46,14 +46,12 @@ const projects = [
 
 mock.onGet('/projects').reply(200, { projects });
 
-// Mock response for a specific project
 mock.onGet(/\/projects\/\d+/).reply(config => {
   const projectId = parseInt(config.url.split('/').pop());
   const project = projects.find(p => p.id === projectId);
   return [200, { projects: [project] }];
 });
 
-// Mock response for updating a specific project
 mock.onPut(/\/projects\/\d+/).reply(config => {
   const projectId = parseInt(config.url.split('/').pop());
   const updatedProject = JSON.parse(config.data); 
@@ -63,6 +61,31 @@ mock.onPut(/\/projects\/\d+/).reply(config => {
     return [200, { project: projects[projectIndex] }];
   }
   return [404, { message: 'Project not found' }];
+});
+
+// Mock for fetching a list of tasks for a specific project
+mock.onGet(/\/projects\/\d+\/tasks/).reply(config => {
+  const projectId = parseInt(config.url.split('/projects/').pop().split('/tasks')[0]);
+  const project = projects.find(p => p.id === projectId);
+  if (project) {
+    return [200, { tasks: project.tasks }];
+  }
+  return [404, { message: 'Project not found' }];
+});
+
+// Mock for updating the status of a task via a drag-and-drop interaction
+mock.onPut(/\/tasks\/\d+\/status/).reply(config => {
+  const taskId = parseInt(config.url.split('/tasks/').pop().split('/status')[0]);
+  const newStatus = JSON.parse(config.data).status;
+  const project = projects.find(p => p.tasks.some(t => t.id === taskId));
+  if (project) {
+    const task = project.tasks.find(t => t.id === taskId);
+    if (task) {
+      task.status = newStatus;
+      return [200, { task }];
+    }
+  }
+  return [404, { message: 'Task not found' }];
 });
 
 
