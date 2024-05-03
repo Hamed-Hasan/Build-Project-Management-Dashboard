@@ -36,7 +36,7 @@ const useProjectsStore = create((set, get) => ({
       project.description.toLowerCase().includes(lowerCaseTerm) ||
       project.status.toLowerCase().includes(lowerCaseTerm)
     );
-    return filtered;
+    set({ filteredProjects: filtered });
   },
 
   removeProject: (id) => {
@@ -44,29 +44,24 @@ const useProjectsStore = create((set, get) => ({
     set({ projects: updatedProjects, filteredProjects: updatedProjects });
   },
 
-
-  updateProject: (updatedProject) => {
-    console.log('updateProject called with:', updatedProject);
-  
-    const existingProjects = get().projects;
-    console.log('Existing projects:', existingProjects);
-  
-    const updatedProjects = existingProjects.map((project) =>
-      project.id === updatedProject.id ? updatedProject : project
-    );
-    console.log('Updated projects:', updatedProjects);
-  
-    const existingFilteredProjects = get().filteredProjects;
-    console.log('Existing filtered projects:', existingFilteredProjects);
-  
-    const updatedFilteredProjects = existingFilteredProjects.map((project) =>
-      project.id === updatedProject.id ? updatedProject : project
-    );
-    console.log('Updated filtered projects:', updatedFilteredProjects);
-  
-    set({ projects: updatedProjects, filteredProjects: updatedFilteredProjects });
+  editProject: async (id, updatedData) => {
+    set({ loading: true });
+    try {
+      const response = await axios.put(`/projects/${id}`, updatedData);
+      const updatedProjects = get().projects.map(project =>
+        project.id === id ? response.data.project : project
+      );
+      set({
+        projects: updatedProjects,
+        filteredProjects: updatedProjects,
+        projectDetails: response.data.project,
+        loading: false
+      });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
   },
-
+  
 }));
 
 export default useProjectsStore;

@@ -4,59 +4,28 @@ import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Skeleton } from "antd";
 import { useRouter } from 'next/router';
 import useProjectsStore from "@/store/projectsStore";
-import EditModal from "@/components/Update/EditModal";
+import EditProjectModal from "@/components/Update/EditProjectModal";
 
 const ProjectsPage = () => {
   const {
     projects,
+    filteredProjects,
     fetchProjects,
     filterProjects,
     removeProject,
+    editProject,
     loading,
-    error,
-    updateProject,
+    error
   } = useProjectsStore((state) => ({
     projects: state.projects,
+    filteredProjects: state.filteredProjects,
     fetchProjects: state.fetchProjects,
     filterProjects: state.filterProjects,
     removeProject: state.removeProject,
+    editProject: state.editProject,
     loading: state.loading,
-    error: state.error,
-    updateProject: state.updateProject,
+    error: state.error
   }));
-
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredProjects, setFilteredProjects] = useState([]);
-
-  useEffect(() => {
-    setFilteredProjects(filterProjects(searchTerm));
-  }, [filterProjects, projects, searchTerm]);
-
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-
-  const showEditModal = (record) => {
-    setEditingProject(record);
-    setEditModalVisible(true);
-  };
-
-  const handleEditCancel = () => {
-    setEditModalVisible(false);
-    setEditingProject(null);
-  };
-
- 
-  const handleUpdate = (updatedProject) => {
-    console.log('handleUpdate called in ProjectsPage with:', updatedProject);
-    updateProject(updatedProject);
-    setEditModalVisible(false);
-    setEditingProject(null);
-  };
 
   useEffect(() => {
     fetchProjects();
@@ -64,18 +33,40 @@ const ProjectsPage = () => {
 
   const router = useRouter();
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentProjectId, setCurrentProjectId] = useState(null);
+
+  const showEditModal = (id) => {
+    setCurrentProjectId(id);
+    setIsModalVisible(true);
+  };
+
+  const handleEdit = () => {
+    setIsModalVisible(false);
+    message.success("Project updated successfully");
+    fetchProjects();
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  
+  
+
   const viewRecord = (id) => {
     console.log("Viewing record:", id);
     router.push(`/projects/projectDetails/${id}`);
   };
 
-  const editRecord = (record) => {
-    showEditModal(record);
-  };
 
   const deleteRecord = (id) => {
     removeProject(id);
     message.success("Record deleted successfully");
+  };
+
+  const handleSearchChange = (e) => {
+    filterProjects(e.target.value);
   };
 
   const columns = [
@@ -175,12 +166,13 @@ const ProjectsPage = () => {
             View
           </Button>
           <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => editRecord(record.id)}
-          >
-            Edit
-          </Button>
+        type="link"
+        icon={<EditOutlined />}
+        onClick={() => showEditModal(record.id)}
+      >
+        Edit
+      </Button>
+
           <Button
             type="link"
             icon={<DeleteOutlined />}
@@ -193,7 +185,7 @@ const ProjectsPage = () => {
       ),
     },
   ];
-
+ 
 
   if (loading) {
     return <Skeleton active />;
@@ -216,11 +208,12 @@ const ProjectsPage = () => {
         <Table dataSource={filteredProjects} columns={columns} rowKey="id" />
       </div>
 
-      <EditModal
-        project={editingProject}
-        visible={editModalVisible}
-        onUpdate={handleUpdate}
-        onCancel={handleEditCancel}
+
+      <EditProjectModal
+        visible={isModalVisible}
+        onEdit={handleEdit}
+        onCancel={handleCancel}
+        projectId={currentProjectId}
       />
     </div>
   );

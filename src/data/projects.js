@@ -53,4 +53,17 @@ mock.onGet(/\/projects\/\d+/).reply(config => {
   return [200, { projects: [project] }];
 });
 
+// Mock response for updating a specific project
+mock.onPut(/\/projects\/\d+/).reply(config => {
+  const projectId = parseInt(config.url.split('/').pop());
+  const updatedProject = JSON.parse(config.data); 
+  const projectIndex = projects.findIndex(p => p.id === projectId);
+  if (projectIndex !== -1) {
+    projects[projectIndex] = { ...projects[projectIndex], ...updatedProject };
+    return [200, { project: projects[projectIndex] }];
+  }
+  return [404, { message: 'Project not found' }];
+});
+
+
 export default axios;
