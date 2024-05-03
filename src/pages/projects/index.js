@@ -69,6 +69,10 @@ const ProjectsPage = () => {
     filterProjects(e.target.value);
   };
 
+  const navigateToTaskManage = () => {
+    router.push('/taskManage'); 
+  };
+
   const columns = [
     {
       title: "Name",
@@ -197,6 +201,7 @@ const ProjectsPage = () => {
 
   return (
     <div style={{ padding: "20px 40px" }}>
+       <div className="flex items-center justify-between">
       <div style={{ marginBottom: "20px", textAlign: "right" }}>
         <Input
           placeholder="Search projects..."
@@ -204,6 +209,12 @@ const ProjectsPage = () => {
           style={{ width: "300px", borderRadius: "4px" }}
         />
       </div>
+      <div style={{ marginBottom: "20px", textAlign: "right" }}>
+        <Button type="primary" onClick={navigateToTaskManage}>
+          Manage Task
+        </Button>
+      </div>
+    </div>
       <div style={{ padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", borderRadius: "8px", backgroundColor: "#fff" }}>
         <Table dataSource={filteredProjects} columns={columns} rowKey="id" />
       </div>
