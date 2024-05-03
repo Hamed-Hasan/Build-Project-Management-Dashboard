@@ -63,6 +63,64 @@ mock.onPut(/\/projects\/\d+/).reply(config => {
   return [404, { message: 'Project not found' }];
 });
 
+// Mock for adding a new task
+mock.onPost('/tasks').reply(config => {
+  const task = JSON.parse(config.data);
+  // Assuming tasks have unique IDs and are stored with the project
+  const project = projects.find(p => p.id === task.projectId);
+  if (project) {
+    const newTaskId = Math.max(...project.tasks.map(t => t.id)) + 1;
+    const newTask = { ...task, id: newTaskId };
+    project.tasks.push(newTask);
+    return [200, { task: newTask }];
+  }
+  return [400, { message: 'Project not found' }];
+});
+
+// Mock for updating a task
+mock.onPut(/\/tasks\/\d+/).reply(config => {
+  const taskId = parseInt(config.url.split('/').pop());
+  const updatedTaskInfo = JSON.parse(config.data);
+  const project = projects.find(p => p.tasks.some(t => t.id === taskId));
+  if (project) {
+    const taskIndex = project.tasks.findIndex(t => t.id === taskId);
+    if (taskIndex !== -1) {
+      project.tasks[taskIndex] = { ...project.tasks[taskIndex], ...updatedTaskInfo };
+      return [200, { task: project.tasks[taskIndex] }];
+    }
+  }
+  return [404, { message: 'Task not found' }];
+});
+
+// Mock for deleting a task
+mock.onDelete(/\/tasks\/\d+/).reply(config => {
+  const taskId = parseInt(config.url.split('/').pop());
+  const project = projects.find(p => p.tasks.some(t => t.id === taskId));
+  if (project) {
+    const tasksBeforeDeletion = project.tasks.length;
+    project.tasks = project.tasks.filter(t => t.id !== taskId);
+    if (tasksBeforeDeletion > project.tasks.length) {
+      return [200, { message: 'Task deleted' }];
+    }
+  }
+  return [404, { message: 'Task not found' }];
+});
+
+// Mock for adding a team member to a project
+mock.onPost(/\/projects\/\d+\/team/).reply(config => {
+  const projectId = parseInt(config.url.split('/projects/').pop().split('/team')[0]);
+  const newMember = JSON.parse(config.data);
+  const project = projects.find(p => p.id === projectId);
+  if (project) {
+    const newMemberId = Math.max(...project.teamMembers.map(m => m.id)) + 1;
+    const memberToAdd = { ...newMember, id: newMemberId };
+    project.teamMembers.push(memberToAdd);
+    return [200, { member: memberToAdd }];
+  }
+  return [404, { message: 'Project not found' }];
+});
+
+
 // Mock for fetching a list of tasks for a specific project
 mock.onGet(/\/projects\/\d+\/tasks/).reply(config => {
   const projectId = parseInt(config.url.split('/projects/').pop().split('/tasks')[0]);

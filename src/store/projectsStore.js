@@ -62,6 +62,50 @@ const useProjectsStore = create((set, get) => ({
     }
   },
 
+  addTask: async (task) => {
+    set({ loading: true });
+    try {
+      const response = await axios.post('/tasks', task);
+      set({ loading: false });
+      return response.data.task;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  editTask: async (taskId, taskData) => {
+    set({ loading: true });
+    try {
+      const response = await axios.put(`/tasks/${taskId}`, taskData);
+      set({ loading: false });
+      return response.data.task;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  deleteTask: async (taskId, projectId) => {
+    set({ loading: true });
+    try {
+      await axios.delete(`/tasks/${taskId}`);
+      // Directly update the task list in the state
+      const updatedTasks = get().tasks.filter(task => task.id !== taskId);
+      set({ tasks: updatedTasks, loading: false });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },  
+
+  addTeamMember: async (projectId, memberData) => {
+    set({ loading: true });
+    try {
+      const response = await axios.post(`/projects/${projectId}/team`, memberData);
+      set({ loading: false });
+      return response.data.member;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
 
   fetchTasks: async (projectId) => {
     set({ loading: true });
