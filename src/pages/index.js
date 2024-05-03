@@ -9,16 +9,16 @@ const LoginPage = () => {
   const router = useRouter();
 
   const handleSubmit = async (values) => {
-    setLoading(true); // Start loading
+    setLoading(true); 
     console.log('Received values of form: ', values);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network request delay
+    await new Promise(resolve => setTimeout(resolve, 1000)); 
     if (values.username === 'admin' && values.password === '12345') {
       message.success('Login successful!');
       router.push('/projects');
     } else {
       message.error('Login failed!');
     }
-    setLoading(false); // Stop loading
+    setLoading(false); 
   };
 
   const togglePasswordVisibility = () => {

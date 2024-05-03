@@ -36,13 +36,37 @@ const useProjectsStore = create((set, get) => ({
       project.description.toLowerCase().includes(lowerCaseTerm) ||
       project.status.toLowerCase().includes(lowerCaseTerm)
     );
-    set({ filteredProjects: filtered });
+    return filtered;
   },
 
   removeProject: (id) => {
     const updatedProjects = get().projects.filter(project => project.id !== id);
     set({ projects: updatedProjects, filteredProjects: updatedProjects });
-  }
+  },
+
+
+  updateProject: (updatedProject) => {
+    console.log('updateProject called with:', updatedProject);
+  
+    const existingProjects = get().projects;
+    console.log('Existing projects:', existingProjects);
+  
+    const updatedProjects = existingProjects.map((project) =>
+      project.id === updatedProject.id ? updatedProject : project
+    );
+    console.log('Updated projects:', updatedProjects);
+  
+    const existingFilteredProjects = get().filteredProjects;
+    console.log('Existing filtered projects:', existingFilteredProjects);
+  
+    const updatedFilteredProjects = existingFilteredProjects.map((project) =>
+      project.id === updatedProject.id ? updatedProject : project
+    );
+    console.log('Updated filtered projects:', updatedFilteredProjects);
+  
+    set({ projects: updatedProjects, filteredProjects: updatedFilteredProjects });
+  },
+
 }));
 
 export default useProjectsStore;
