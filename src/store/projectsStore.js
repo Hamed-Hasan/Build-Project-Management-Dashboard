@@ -111,12 +111,12 @@ const useProjectsStore = create((set, get) => ({
     set({ loading: true });
     try {
       const response = await axios.get(`/projects/${projectId}/tasks`);
-      set({ loading: false });
-      return response.data.tasks;
+      return response.data.tasks || []; // Ensure an empty array is returned if no tasks
     } catch (error) {
       set({ error: error.message, loading: false });
+      return []; // Return empty array in case of error
     }
-  },
+  },  
 
   updateTaskStatus: async (taskId, status) => {
     set({ loading: true });

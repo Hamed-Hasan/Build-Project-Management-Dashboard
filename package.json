@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
+    "@atlaskit/drag-and-drop": "^0.15.1",
     "antd": "^5.16.5",
     "axios": "^1.6.8",
     "axios-mock-adapter": "^1.22.0",

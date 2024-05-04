@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Table, message } from "antd";
-import { EyeOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Input, Select, Table, message } from "antd";
+import { EyeOutlined, EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Skeleton } from "antd";
 import { useRouter } from 'next/router';
 import useProjectsStore from "@/store/projectsStore";
@@ -35,6 +35,7 @@ const ProjectsPage = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentProjectId, setCurrentProjectId] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const showEditModal = (id) => {
     setCurrentProjectId(id);
@@ -69,8 +70,8 @@ const ProjectsPage = () => {
     filterProjects(e.target.value);
   };
 
-  const navigateToTaskManage = () => {
-    router.push('/taskManage'); 
+  const navigateToTaskManage = (projectId) => {
+    router.push(`/taskManage?projectId=${projectId}`);
   };
 
   const columns = [
@@ -210,10 +211,34 @@ const ProjectsPage = () => {
         />
       </div>
       <div style={{ marginBottom: "20px", textAlign: "right" }}>
-        <Button type="primary" onClick={navigateToTaskManage}>
-          Manage Task
-        </Button>
-      </div>
+  <Input.Group compact>
+    <Select
+      style={{ width: 300 }}
+      placeholder="Select a Project"
+      onChange={(value) => setSelectedProjectId(value)}
+    >
+      {projects.map((project) => (
+        <Select.Option key={project.id} value={project.id}>
+          {project.name}
+        </Select.Option>
+      ))}
+    </Select>
+    <Button
+      type="link"
+      icon={<PlusOutlined />}
+      onClick={() => {
+        if (selectedProjectId) {
+          navigateToTaskManage(selectedProjectId);
+        } else {
+          message.error("Please select a project first");
+        }
+      }}
+    >
+      Manage Tasks
+    </Button>
+  </Input.Group>
+</div>
+
     </div>
       <div style={{ padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", borderRadius: "8px", backgroundColor: "#fff" }}>
         <Table dataSource={filteredProjects} columns={columns} rowKey="id" />
