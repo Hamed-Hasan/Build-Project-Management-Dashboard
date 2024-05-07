@@ -1,40 +1,78 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📊 Project Management Dashboard
 
-## Getting Started
+Welcome to the **Project Management Dashboard** 🚀, a cutting-edge application designed to streamline the management of tasks and projects. This dashboard is crafted to enhance productivity and organization through a suite of powerful features.
 
-First, run the development server:
+## 🎯 Objective
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The main goal of this dashboard is to provide a user-friendly platform that facilitates effective management of tasks and projects, incorporating robust features for an optimal user experience.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌟 Features
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### 🔐 Authentication Page
+- **Login Form**: Leverage Ant Design components for a visually appealing and validated login form.
+- **Mock Authentication**: Simulate authentication responses to test login functionality without a backend.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### 📋 Projects Overview Page
+- **Project List**: View a dynamically loaded list of projects with options managed via a mock API.
+- **Interactive Actions**: Options to view, edit, and delete projects are made straightforward and accessible.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### 📑 Project Details Page
+- **Detailed Information**: Explore tasks, team members, and recent activities upon selecting a project.
+- **Management Tools**: Easily add tasks and assign roles to team members.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 🛠 Task Management
+- **Task Operations**: Tasks can be added, edited, or marked as completed with comprehensive details like descriptions and deadlines.
+- **Drag-and-Drop**: Change task statuses through a drag-and-drop interface, powered by Zustand for seamless state management.
 
-## Learn More
+### 🔍 Task Filters and Search Functionality
+- **Task Filters**: Efficiently filter tasks by status, due date, or assignee.
+- **Quick Search**: Utilize a search bar to find tasks promptly.
 
-To learn more about Next.js, take a look at the following resources:
+### 🎨 Interactive Dashboard
+- **UI Components**: Enhance user interaction with Ant Design's modals, dropdowns, and tooltips.
+- **Responsive Design**: Ensure a smooth user experience on any device with Tailwind CSS.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠 Technical Requirements
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Framework**: [Next.js](https://nextjs.org/) for comprehensive routing and server-side rendering capabilities.
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand) for efficient and straightforward global state management.
+- **Data Fetching**: [React Query](https://react-query.tanstack.com/) for managing asynchronous data operations and caching.
+- **UI Components**: [Ant Design](https://ant.design/) for high-quality pre-built UI elements.
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for flexible and custom responsive designs.
 
-## Deploy on Vercel
+## ⚙️ Setup and Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/Hamed-Hasan/Build-Project-Management-Dashboard.git
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. Enter the project directory:
+    ```bash
+    cd Build-Project-Management-Dashboard
+    ```
+
+3. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+4. Start the development server:
+    ```bash
+    npm run dev
+    ```
+
+5. Access the dashboard at `http://localhost:3000`.
+
+## 🤝 Contribution Guidelines
+
+Contributions are welcome! 🌟 If you'd like to improve the Project Management Dashboard:
+
+1. Fork the repository and create your branch from `main`.
+2. Make your changes and document them clearly.
+3. Submit a pull request detailing the enhancements or fixes.
+
+## 📜 License
+
+This project is proudly licensed under the MIT License.
+
