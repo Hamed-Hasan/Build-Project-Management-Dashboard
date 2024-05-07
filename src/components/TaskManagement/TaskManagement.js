@@ -255,46 +255,54 @@ const TaskManagement = ({ projectId }) => {
   );
 
   return (
-    <>
+    <div className="container mx-auto p-4 bg-white shadow-lg rounded-lg">
       <Input
         prefix={<SearchOutlined />}
         placeholder="Search tasks"
         value={searchTerm}
         onChange={handleSearchChange}
-        style={{ marginBottom: '20px' }}
+        className="mb-4 p-2 border border-gray-300 rounded-lg"
       />
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row gutter={16}>
+        <Row gutter={16} >
           {Object.entries(columns).map(([columnId, column]) => (
             <Col span={8} key={columnId}>
-              <h2>{column.name}</h2>
+              <h2 className="text-lg font-semibold mb-2">{column.name}</h2>
               <Droppable droppableId={columnId}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="bg-gray-100 p-2 rounded-md min-h-[200px]"
+                    className="bg-gray-50 p-3 rounded-lg min-h-[300px] shadow-sm flex flex-col"
                   >
-                    {column.tasks.map((task, index) => (
-                      <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <TaskCard task={task} />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
+                    <div className="flex-1">
+                      {column.tasks.map((task, index) => (
+                        <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="bg-white mb-2 p-3 rounded-lg shadow-md"
+                            >
+                              <TaskCard task={task} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                    <Button
+                      type="dashed"
+                      icon={<PlusOutlined />}
+                      className="mt-2 w-full"
+                      onClick={() => showModal()}
+                    >
+                      Add Task
+                    </Button>
                   </div>
                 )}
               </Droppable>
-              <Button type="dashed" icon={<PlusOutlined />} onClick={() => showModal()}>
-                Add Task
-              </Button>
             </Col>
           ))}
         </Row>
@@ -305,7 +313,7 @@ const TaskManagement = ({ projectId }) => {
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
       />
-    </>
+    </div>
   );
 };
 
