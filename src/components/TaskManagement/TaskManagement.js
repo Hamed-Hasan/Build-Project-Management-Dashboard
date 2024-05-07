@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, Button, Col, Row, Tag, Modal, Form, Input, DatePicker, Select, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import useProjectsStore from '@/store/projectsStore';
 
@@ -32,6 +32,7 @@ const TaskManagement = ({ projectId }) => {
   } = useProjectsStore();
 
   const [columns, setColumns] = useState(initialColumns);
+  const [searchTerm, setSearchTerm] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
 
@@ -57,6 +58,41 @@ const TaskManagement = ({ projectId }) => {
     }
     loadTasks();
   }, [projectId, fetchTasks]);
+
+  // Function to handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    applySearchFilter(e.target.value);
+  };
+
+  // Function to apply the search filter across all columns
+  const applySearchFilter = (query) => {
+    const lowerCaseQuery = query.toLowerCase();
+    const updatedColumns = {
+      'column-todo': {
+        ...columns['column-todo'],
+        tasks: columns['column-todo'].tasks.filter(
+          task => task.title.toLowerCase().includes(lowerCaseQuery) ||
+            task.description.toLowerCase().includes(lowerCaseQuery)
+        )
+      },
+      'column-in-progress': {
+        ...columns['column-in-progress'],
+        tasks: columns['column-in-progress'].tasks.filter(
+          task => task.title.toLowerCase().includes(lowerCaseQuery) ||
+            task.description.toLowerCase().includes(lowerCaseQuery)
+        )
+      },
+      'column-done': {
+        ...columns['column-done'],
+        tasks: columns['column-done'].tasks.filter(
+          task => task.title.toLowerCase().includes(lowerCaseQuery) ||
+            task.description.toLowerCase().includes(lowerCaseQuery)
+        )
+      }
+    };
+    setColumns(updatedColumns);
+  };
 
   // Handle drag and drop between columns
   const onDragEnd = async (result) => {
@@ -220,6 +256,13 @@ const TaskManagement = ({ projectId }) => {
 
   return (
     <>
+      <Input
+        prefix={<SearchOutlined />}
+        placeholder="Search tasks"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        style={{ marginBottom: '20px' }}
+      />
       <DragDropContext onDragEnd={onDragEnd}>
         <Row gutter={16}>
           {Object.entries(columns).map(([columnId, column]) => (
